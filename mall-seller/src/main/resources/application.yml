@@ -14,6 +14,9 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
 
 mybatis:
   mapper-locations:

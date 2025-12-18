@@ -7,3 +7,58 @@ export function createProduct(data) {
         data: data
     })
 }
+
+export function fetchList(params) {
+    return request({
+        url: '/product/list',
+        method: 'get',
+        params: params
+    })
+}
+
+export function getProduct(id) {
+    return request({
+        url: `/product/${id}`,
+        method: 'get'
+    })
+}
+
+export function updateProduct(id, data) {
+    return request({
+        url: `/product/update/${id}`,
+        method: 'post',
+        data: data
+    })
+}
+
+export function updateDeleteStatus(params) {
+    return request({
+        url: '/product/update/deleteStatus',
+        method: 'post',
+        params: params
+    })
+}
+
+export function updatePublishStatus(params) {
+    return request({
+        url: '/product/update/publishStatus',
+        method: 'post',
+        params: params
+    })
+}
+
+export function updateNewStatus(params) {
+    return request({
+        url: '/product/update/newStatus',
+        method: 'post',
+        params: params
+    })
+}
+
+export function updateRecommendStatus(params) {
+    return request({
+        url: '/product/update/recommendStatus',
+        method: 'post',
+        params: params
+    })
+}

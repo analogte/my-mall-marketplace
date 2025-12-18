@@ -76,4 +76,145 @@ public class SellerProductServiceImpl implements SellerProductService {
         }
         return null;
     }
+
+    @Override
+    public List<PmsProduct> list(String keyword, Integer pageSize, Integer pageNum) {
+        com.github.pagehelper.PageHelper.startPage(pageNum, pageSize);
+        com.macro.mall.model.PmsProductExample example = new com.macro.mall.model.PmsProductExample();
+        com.macro.mall.model.PmsProductExample.Criteria criteria = example.createCriteria();
+        criteria.andDeleteStatusEqualTo(0);
+
+        // Filter by Shop ID
+        UmsAdmin currentSeller = getCurrentSeller();
+        if (currentSeller != null) {
+            UmsShopExample shopExample = new UmsShopExample();
+            shopExample.createCriteria().andOwnerIdEqualTo(currentSeller.getId());
+            List<UmsShop> shops = shopMapper.selectByExample(shopExample);
+            if (!shops.isEmpty()) {
+                criteria.andShopIdEqualTo(shops.get(0).getId());
+            } else {
+                return new java.util.ArrayList<>(); // No shop = no products
+            }
+        }
+
+        if (keyword != null && !keyword.isEmpty()) {
+            criteria.andNameLike("%" + keyword + "%");
+        }
+        return productMapper.selectByExample(example);
+    }
+
+    /**
+     * Helper method to get current seller's shop ID
+     */
+    private Long getCurrentShopId() {
+        UmsAdmin currentSeller = getCurrentSeller();
+        if (currentSeller == null) {
+            throw new RuntimeException("No logged in user found");
+        }
+        UmsShopExample shopExample = new UmsShopExample();
+        shopExample.createCriteria().andOwnerIdEqualTo(currentSeller.getId());
+        List<UmsShop> shops = shopMapper.selectByExample(shopExample);
+        if (shops.isEmpty()) {
+            throw new RuntimeException("Shop not found for this seller");
+        }
+        return shops.get(0).getId();
+    }
+
+    /**
+     * Verify that a product belongs to the current seller's shop
+     */
+    private boolean isProductOwnedBySeller(Long productId) {
+        Long shopId = getCurrentShopId();
+        PmsProduct product = productMapper.selectByPrimaryKey(productId);
+        return product != null && shopId.equals(product.getShopId());
+    }
+
+    @Override
+    public PmsProduct getById(Long id) {
+        if (!isProductOwnedBySeller(id)) {
+            throw new RuntimeException("Product not found or access denied");
+        }
+        return productMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public int update(Long id, SellerProductParam productParam) {
+        // Security check: verify ownership
+        if (!isProductOwnedBySeller(id)) {
+            throw new RuntimeException("Product not found or access denied");
+        }
+
+        PmsProduct product = new PmsProduct();
+        BeanUtils.copyProperties(productParam, product);
+        product.setId(id);
+        // Keep the shop ID unchanged (don't allow changing shop)
+        product.setShopId(null);
+
+        return productMapper.updateByPrimaryKeySelective(product);
+    }
+
+    @Override
+    public int updateDeleteStatus(List<Long> ids, Integer deleteStatus) {
+        Long shopId = getCurrentShopId();
+        int count = 0;
+        for (Long id : ids) {
+            PmsProduct product = productMapper.selectByPrimaryKey(id);
+            // Security check: only delete if owned by seller
+            if (product != null && shopId.equals(product.getShopId())) {
+                PmsProduct updateProduct = new PmsProduct();
+                updateProduct.setId(id);
+                updateProduct.setDeleteStatus(deleteStatus);
+                count += productMapper.updateByPrimaryKeySelective(updateProduct);
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public int updatePublishStatus(List<Long> ids, Integer publishStatus) {
+        Long shopId = getCurrentShopId();
+        int count = 0;
+        for (Long id : ids) {
+            PmsProduct product = productMapper.selectByPrimaryKey(id);
+            if (product != null && shopId.equals(product.getShopId())) {
+                PmsProduct updateProduct = new PmsProduct();
+                updateProduct.setId(id);
+                updateProduct.setPublishStatus(publishStatus);
+                count += productMapper.updateByPrimaryKeySelective(updateProduct);
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public int updateNewStatus(List<Long> ids, Integer newStatus) {
+        Long shopId = getCurrentShopId();
+        int count = 0;
+        for (Long id : ids) {
+            PmsProduct product = productMapper.selectByPrimaryKey(id);
+            if (product != null && shopId.equals(product.getShopId())) {
+                PmsProduct updateProduct = new PmsProduct();
+                updateProduct.setId(id);
+                updateProduct.setNewStatus(newStatus);
+                count += productMapper.updateByPrimaryKeySelective(updateProduct);
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public int updateRecommendStatus(List<Long> ids, Integer recommendStatus) {
+        Long shopId = getCurrentShopId();
+        int count = 0;
+        for (Long id : ids) {
+            PmsProduct product = productMapper.selectByPrimaryKey(id);
+            if (product != null && shopId.equals(product.getShopId())) {
+                PmsProduct updateProduct = new PmsProduct();
+                updateProduct.setId(id);
+                updateProduct.setRecommandStatus(recommendStatus);
+                count += productMapper.updateByPrimaryKeySelective(updateProduct);
+            }
+        }
+        return count;
+    }
 }

@@ -28,7 +28,7 @@ export const constantRouterMap = [
             {
                 path: 'list',
                 name: 'ProductList',
-                component: () => import('@/views/product/list'), // Placeholder
+                component: () => import('@/views/product/index'),
                 meta: { title: 'Product List', icon: 'product-list' }
             },
             {

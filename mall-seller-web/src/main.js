@@ -8,6 +8,9 @@ import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import App from './App'
 import router from './router'
+import store from './store'
+
+import '@/permission' // permission control
 
 Vue.use(ElementUI, { locale })
 
@@ -22,6 +25,7 @@ Vue.filter('currency', function (value) {
 new Vue({
     el: '#app',
     router,
+    store,
     render: h => h(App)
 })
 

@@ -99,7 +99,7 @@ export default {
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          createProduct(this.product).then(response => {
+          createProduct(this.product).then(() => {
              this.$message({
                 message: 'บันทึกสินค้าสำเร็จ!',
                 type: 'success',

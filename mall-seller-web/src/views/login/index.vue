@@ -25,7 +25,8 @@
 </template>
 
 <script>
-import { login } from '@/api/seller'
+
+
 
 export default {
   name: 'Login',
@@ -47,17 +48,17 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          login(this.loginForm).then(response => {
+          this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
-            const token = response.data.token
-            const tokenHead = response.data.tokenHead
-            localStorage.setItem('seller_token', tokenHead + token) // Simple storage
-            this.$message.success('Login Success')
-            this.$router.push('/home')
-          }).catch(() => {
+            this.$message.success('เข้าสู่ระบบสำเร็จ')
+            this.$router.push({ path: this.redirect || '/' })
+          }).catch((err) => {
+            console.log(err)
             this.loading = false
+            this.$message.error('เข้าสู่ระบบไม่สำเร็จ: ' + err)
           })
         } else {
+          console.log('error submit!!')
           return false
         }
       })

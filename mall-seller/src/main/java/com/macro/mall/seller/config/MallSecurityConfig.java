@@ -11,8 +11,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.macro.mall.security.config.SecurityConfig;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
 @Configuration
-public class MallSecurityConfig {
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class MallSecurityConfig extends SecurityConfig {
 
     @Autowired
     private UmsSellerService sellerService;

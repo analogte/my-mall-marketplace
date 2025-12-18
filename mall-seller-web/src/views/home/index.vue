@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="header">
-      <h2>Welcome to Seller Center</h2>
+      <h2>ยินดีต้อนรับสู่ศูนย์จัดการร้านค้า</h2>
       <div class="auth-buttons">
         <template v-if="!isLoggedIn">
           <el-button type="primary" @click="goToLogin">เข้าสู่ระบบ</el-button>
@@ -18,13 +18,13 @@
     <el-row :gutter="20">
       <el-col :span="6">
         <el-card shadow="always">
-          <h3>Total Sales</h3>
+          <h3>ยอดขายรวม</h3>
           <p class="stat-value">฿ 0.00</p>
         </el-card>
       </el-col>
       <el-col :span="6">
         <el-card shadow="always">
-          <h3>Total Orders</h3>
+          <h3>จำนวนคำสั่งซื้อ</h3>
           <p class="stat-value">0</p>
         </el-card>
       </el-col>
@@ -32,22 +32,23 @@
   </div>
 </template>
 
+
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'Home',
-  data() {
-    return {
-      isLoggedIn: false
+  computed: {
+    ...mapGetters([
+      'sidebar',
+      'name',
+      'roles'
+    ]),
+    isLoggedIn() {
+      return this.$store.getters.token
     }
   },
-  mounted() {
-    this.checkLoginStatus()
-  },
   methods: {
-    checkLoginStatus() {
-      const token = localStorage.getItem('seller_token')
-      this.isLoggedIn = !!token
-    },
     goToLogin() {
       this.$router.push('/login')
     },
@@ -55,10 +56,9 @@ export default {
       this.$router.push('/register')
     },
     handleLogout() {
-      localStorage.removeItem('seller_token')
-      this.isLoggedIn = false
-      this.$message.success('Logout Success')
-      this.$router.push('/login')
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload()
+      })
     }
   }
 }

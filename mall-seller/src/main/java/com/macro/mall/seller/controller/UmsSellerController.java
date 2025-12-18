@@ -44,4 +44,23 @@ public class UmsSellerController {
         sellerService.register(sellerRegisterParam);
         return CommonResult.success(null);
     }
+
+    @ApiOperation(value = "Get current seller info")
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @ResponseBody
+    public CommonResult getInfo() {
+        // Mock data for now, real implementation should retrieve from SecurityContext
+        Map<String, Object> data = new HashMap<>();
+        data.put("username", "Seller");
+        data.put("roles", new String[] { "TEST" });
+        data.put("icon", "http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20180607/timg.jpg");
+        return CommonResult.success(data);
+    }
+
+    @ApiOperation(value = "Logout")
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    @ResponseBody
+    public CommonResult logout() {
+        return CommonResult.success(null);
+    }
 }
