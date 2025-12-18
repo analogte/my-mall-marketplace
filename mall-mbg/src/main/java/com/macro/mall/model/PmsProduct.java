@@ -16,6 +16,8 @@ public class PmsProduct implements Serializable {
 
     private Long productAttributeCategoryId;
 
+    private Long shopId;
+
     private String name;
 
     private String pic;
@@ -160,6 +162,14 @@ public class PmsProduct implements Serializable {
 
     public void setProductAttributeCategoryId(Long productAttributeCategoryId) {
         this.productAttributeCategoryId = productAttributeCategoryId;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 
     public String getName() {

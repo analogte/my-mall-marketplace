@@ -1,6 +1,7 @@
 package com.macro.mall.seller.service;
 
 import com.macro.mall.seller.dto.SellerRegisterParam;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -18,4 +19,9 @@ public interface UmsSellerService {
      * Return JWT Token
      */
     String login(String username, String password);
+
+    /**
+     * Load User by Username
+     */
+    UserDetails loadUserByUsername(String username);
 }
